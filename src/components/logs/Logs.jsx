@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
-import LogItem from "./LogItem";
-import Preloader from "../layout/Preloader";
+import React, { useState, useEffect } from 'react';
+import LogItem from './LogItem';
+import Preloader from '../layout/Preloader';
 
 const Logs = () => {
   const [logs, setLogs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     setTimeout(() => {
       getLogs();
     }, 2000);
@@ -16,13 +15,14 @@ const Logs = () => {
   }, []);
 
   const getLogs = async () => {
-    setLoading(true);
-
-    const res = await fetch("/logs");
-    const data = await res.json();
-
-    setLogs(data);
-    setLoading(false);
+    try {
+      const res = await fetch('/logs');
+      const data = await res.json();
+      setLogs(data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -30,12 +30,12 @@ const Logs = () => {
   }
 
   return (
-    <ul className="collection with-header">
-      <li className="collection-heder">
-        <h4 className="center">System Logs</h4>
+    <ul className='collection with-header'>
+      <li className='collection-heder'>
+        <h4 className='center'>System Logs</h4>
       </li>
       {!loading && logs.length === 0 ? (
-        <h2 className="center">No logs</h2>
+        <h2 className='center'>No logs</h2>
       ) : (
         logs.map((l) => <LogItem log={l} key={l.id} />)
       )}
